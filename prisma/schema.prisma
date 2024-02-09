@@ -1,6 +1,9 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
+// every time we makec changes, we need to run `npx prisma migrate dev --name init` to create the migration file
+// to see in a GUI, we can run `npx prisma studio` and it will open a GUI to see the data
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -12,9 +15,49 @@ datasource db {
 
 model User {
   id Int @id @default(autoincrement())
+  avatar String
+  userType String
+  firstname String
+  lastname String
   email String @unique
-  username String @unique
-  password String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  auth Auth?
+  paymentMethod PaymentMethod?
+  paymentHistory PaymentHistory[]
 }
+
+model Auth {
+  id Int @id @default(autoincrement())
+  email String @unique
+  loggedWith String
+  password String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user User @relation(fields: [email], references: [email])
+}
+
+// this will be the current payment method for the user
+model PaymentMethod {
+  id Int @id @default(autoincrement())
+  method String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  jsonInfo Json 
+  stringfiedInfo String
+  user User @relation(fields: [id], references: [id])
+}
+
+// now we will have a table for the user's payment history (relation 1 to many)
+model PaymentHistory {
+  id Int @id @default(autoincrement())
+  amount Float
+  method String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  jsonReceipt Json
+  stringfiedReceipt String
+  user User @relation(fields: [id], references: [id])
+}
+
+

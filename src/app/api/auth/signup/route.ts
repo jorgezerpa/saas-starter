@@ -3,7 +3,7 @@ import prisma from "@/libs/prisma"
 import bcrypt from "bcrypt"
 
 export async function POST (req: Request, res: Response) {
-  const data = await req.json()
+  const data = await req.json() 
 
     const userFound = await prisma.user.findUnique({
         where: {
@@ -19,13 +19,13 @@ export async function POST (req: Request, res: Response) {
 
     const newUser = await prisma.user.create({
         data: {
+            avatar: "https://ui-avatars.com/api/?name=John+Doe",
             email: data.email,
-            password: data.password,
-            username: data.name
+            firstname: data.firstname,
+            lastname: data.lastname,
+            userType: "user",
         }
     })
 
-    const { password, ...user } = newUser
-
-  return NextResponse.json({ user})
+  return NextResponse.json({ user: newUser})
 }

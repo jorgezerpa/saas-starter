@@ -22,21 +22,30 @@ const authOptions = {
             },
             async authorize(credentials: Record<"email" | "password", string> | undefined, req: Pick<RequestInternal, "body" | "query" | "headers" | "method">): Promise<User | null> {
                 if (!credentials) return null;
-                const user = await prisma.user.findUnique({
+                const auth = await prisma.auth.findUnique({
                     where: {
                         email: credentials.email
                     }
                 });
-                if (!user) return null;
+                if (!auth) return null;
+                if(!auth.password) return null;
 
-                const match = await bcrypt.compare(credentials.password, user.password);
+                const match = await bcrypt.compare(credentials.password, auth.password);
                 if (!match) return null;
 
+                const user = await prisma.user.findUnique({
+                    where: {
+                        email: auth.email
+                    }
+                });
+
+                if (!user) return null;
+
                 return { 
-                    id: user.id.toString(), 
-                    name: user.username,
+                    id: auth.id.toString(), 
+                    name: user.firstname + " " + user.lastname,
                     email: user.email,
-                    image: "https://www.gravatar.com/avatar/"
+                    image: user.avatar,
                 };
             }
             

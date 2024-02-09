@@ -2,6 +2,7 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 // every time we makec changes, we need to run `npx prisma migrate dev --name init` to create the migration file
+// to have typescript support, we need to run `npx prisma generate` to generate the types for the prisma client.
 // to see in a GUI, we can run `npx prisma studio` and it will open a GUI to see the data
 
 generator client {

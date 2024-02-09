@@ -1,7 +1,4 @@
 {
-  "engines": {
-    "node": "16.x"
-  },
   "name": "saas-basis",
   "version": "0.1.0",
   "private": true,
